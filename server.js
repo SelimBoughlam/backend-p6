@@ -1,7 +1,10 @@
 const http = require("http");
 const app = require("./app");
+const dotEnv = require("dotenv").config({ path: "./config/.env" });
 
-app.set("port", process.env.PORT || 3000);
+app.set("port", process.env.PORT);
 const server = http.createServer(app);
 
-server.listen(process.env.PORT || 3000);
+server.listen(process.env.PORT, () => {
+  console.log("listening on port " + process.env.PORT);
+});
