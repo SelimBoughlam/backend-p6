@@ -3,6 +3,15 @@ const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
 
+/**
+ * Fonction permettant l'inscription d'un utilisateur
+ * Hash(cryptage)du mot de passe
+ * création du nouvel utilisateur
+ * enregistrement en base de donnée
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
 exports.signup = (req, res, next) => {
   bcrypt
     .hash(req.body.password, 10)
@@ -19,6 +28,15 @@ exports.signup = (req, res, next) => {
     .catch((error) => res.status(500).json({ error }));
 };
 
+/**
+ * Fonction permettant la connexion d'un utilisateur existant
+ * recherche de l'utilisateur en base de donnée
+ * comparaison des mots de passes(cryptés)
+ * retourne objet contenant userId ainsi qu'un token
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
 exports.login = (req, res, next) => {
   User.findOne({ email: req.body.email })
     .then((user) => {
