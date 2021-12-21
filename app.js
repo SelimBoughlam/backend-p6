@@ -1,9 +1,13 @@
 const express = require("express");
+
+// Config variables d'environnement
 const dotEnv = require("dotenv").config({ path: "./config/.env" });
+
 const mongoose = require("mongoose");
 
 const app = express();
 
+// Connexion à la  BDD
 mongoose
   .connect(
     "mongodb+srv://" +
