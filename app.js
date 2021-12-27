@@ -6,6 +6,8 @@ const mongoose = require("mongoose");
 const app = express();
 
 const userRoutes = require("./routes/user");
+const saucesRoutes = require("./routes/sauces");
+const path = require("path");
 app.use(express.json());
 
 // Connexion à la  BDD
@@ -33,7 +35,11 @@ app.use((req, res, next) => {
   next();
 });
 
+//ajout du chemin statique du dossier images
+app.use("/images", express.static(path.join(__dirname, "images")));
+
 // Appel des différents routers
+app.use("/api/sauces", saucesRoutes);
 app.use("/api/auth", userRoutes);
 
 module.exports = app;
