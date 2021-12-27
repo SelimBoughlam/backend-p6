@@ -1,5 +1,6 @@
 const express = require("express");
 const Sauce = require("../models/sauces");
+const fs = require("fs");
 
 //Fonction permettant la création d'une sauce + ajout à la BDD
 exports.createSauce = (req, res, next) => {
@@ -14,6 +15,7 @@ exports.createSauce = (req, res, next) => {
     usersLiked: [],
     usersDisliked: [],
   });
+
   sauce
     .save()
     .then(() => res.status(201).json("sauce crée!"))
@@ -54,7 +56,14 @@ exports.modifySauce = (req, res, next) => {
 
 // Fonction permettant la suppression d'une sauce
 exports.deleteSauce = (req, res, next) => {
-  Sauce.deleteOne({ _id: req.params.id })
-    .then(() => res.status(200).json({ message: "sauce supprimée!" }))
-    .catch((error) => res.status(400).json({ error }));
+  Sauce.findOne({ _id: req.params.id })
+    .then((sauce) => {
+      const filename = sauce.imageUrl.split("/images/")[1];
+      fs.unlink(`images/${filename}`, () => {
+        Sauce.deleteOne({ _id: req.params.id })
+          .then(() => res.status(200).json({ message: "sauce supprimée!" }))
+          .catch((error) => res.status(400).json({ error }));
+      });
+    })
+    .catch((error) => res.status(500).json({ error }));
 };
