@@ -1,7 +1,7 @@
 const express = require("express");
 
 // Config variables d'environnement
-const dotEnv = require("dotenv").config({ path: "./config/.env" });
+const dotEnv = require("dotenv").config();
 const mongoose = require("mongoose");
 const app = express();
 

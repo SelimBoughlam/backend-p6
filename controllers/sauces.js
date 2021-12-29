@@ -1,6 +1,7 @@
 const express = require("express");
 const Sauce = require("../models/sauces");
 const fs = require("fs");
+const { error } = require("console");
 
 //Fonction permettant la création d'une sauce + ajout à la BDD
 exports.createSauce = (req, res, next) => {
@@ -47,10 +48,10 @@ exports.modifySauce = (req, res, next) => {
       }
     : { ...req.body };
   Sauce.updateOne(
-    { _id: req.params.id },
+    { _id: req.params.id, userId: req.auth.userId },
     { ...sauceObject, _id: req.params.id }
   )
-    .then(() => res.status(200).json({ message: "Objet modifié !" }))
+    .then(() => res.status(200).json({ message: "sauce modifié !" }))
     .catch((error) => res.status(400).json({ error }));
 };
 
@@ -58,6 +59,13 @@ exports.modifySauce = (req, res, next) => {
 exports.deleteSauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id })
     .then((sauce) => {
+      if (!sauce) {
+        res.status(404).json({ message: "cette sauce n'existe pas" });
+      }
+      if (sauce.userId !== req.auth.userId) {
+        return res.status(403).json({ message: "requête non autorisée" });
+      }
+
       const filename = sauce.imageUrl.split("/images/")[1];
       fs.unlink(`images/${filename}`, () => {
         Sauce.deleteOne({ _id: req.params.id })
