@@ -89,9 +89,13 @@ exports.deleteSauce = (req, res, next) => {
     .catch((error) => res.status(500).json({ error }));
 };
 
+// Gestion du système de likes,dislikes
 exports.likeSystem = (req, res, next) => {
+  // test de tous les cas possibles
   switch (req.body.like) {
+    // ajout d'un like
     case 1:
+      // incrémentation du nombre de likes + ajout de l'utilisateur qui like
       Sauce.updateOne(
         { _id: req.params.id },
         { $push: { usersLiked: req.body.userId }, $inc: { likes: +1 } }
@@ -103,7 +107,9 @@ exports.likeSystem = (req, res, next) => {
 
       break;
 
+    //Ajout d'un dislike
     case -1:
+      // incrémentation du nombre de dislikes + ajout de l'utilisateur qui dislike
       Sauce.updateOne(
         { _id: req.params.id },
         { $push: { usersDisliked: req.body.userId }, $inc: { dislikes: +1 } }
@@ -114,12 +120,15 @@ exports.likeSystem = (req, res, next) => {
         .catch((error) => res.status(400).json({ error }));
       break;
 
+    // Annulation d'un like ou dislike
     case 0:
       Sauce.findOne({ _id: req.params.id })
         .then((sauce) => {
+          // si l'utilisateur n'est pas présent dans le tableau des dislikes
           if (sauce.usersDisliked.indexOf(req.body.userId) != -1) {
             Sauce.updateOne(
               { _id: req.params.id },
+              // retrait de l'utilisateur du tableau usersDisliked + décrémentation du dislike
               {
                 $pull: { usersDisliked: req.body.userId },
                 $inc: { dislikes: -1 },
@@ -128,9 +137,11 @@ exports.likeSystem = (req, res, next) => {
               .then(() => res.status(200).json({ message: "aucun avis" }))
               .catch((error) => res.status(400).json({ error }));
           }
+          // si l'utilisateur n'est pas présent dans le tableau des likes
           if (sauce.usersLiked.indexOf(req.body.userId) != -1) {
             Sauce.updateOne(
               { _id: req.params.id },
+              // retrait de l'utilisateur du tableau usersliked + décrémentation du like
               { $pull: { usersLiked: req.body.userId }, $inc: { likes: -1 } }
             )
               .then(() => res.status(200).json({ message: "aucun avis" }))
