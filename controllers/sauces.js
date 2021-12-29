@@ -39,20 +39,30 @@ exports.getOneSauce = (req, res, next) => {
 
 //Fonction permettant la modification d'une sauce
 exports.modifySauce = (req, res, next) => {
-  const sauceObject = req.file
-    ? {
-        ...JSON.parse(req.body.sauce),
-        imageUrl: `${req.protocol}://${req.get("host")}/images/${
-          req.file.filename
-        }`,
+  Sauce.findOne({ _id: req.params.id })
+    .then((sauce) => {
+      if (!sauce) {
+        res.status(400).json({ message: "cette sauce n'existe pas!" });
       }
-    : { ...req.body };
-  Sauce.updateOne(
-    { _id: req.params.id, userId: req.auth.userId },
-    { ...sauceObject, _id: req.params.id }
-  )
-    .then(() => res.status(200).json({ message: "sauce modifié !" }))
-    .catch((error) => res.status(400).json({ error }));
+      if (sauce.userId != req.auth.userId) {
+        return res.status(403).json({ message: "requête non autorisée" });
+      }
+      const sauceObject = req.file
+        ? {
+            ...JSON.parse(req.body.sauce),
+            imageUrl: `${req.protocol}://${req.get("host")}/images/${
+              req.file.filename
+            }`,
+          }
+        : { ...req.body };
+      Sauce.updateOne(
+        { _id: req.params.id, userId: req.auth.userId },
+        { ...sauceObject, _id: req.params.id }
+      )
+        .then(() => res.status(200).json({ message: "sauce modifié !" }))
+        .catch((error) => res.status(400).json({ error }));
+    })
+    .catch((error) => res.status(500).json({ error }));
 };
 
 // Fonction permettant la suppression d'une sauce
