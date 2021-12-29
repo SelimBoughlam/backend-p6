@@ -57,6 +57,7 @@ exports.modifySauce = (req, res, next) => {
 
 // Fonction permettant la suppression d'une sauce
 exports.deleteSauce = (req, res, next) => {
+  // protection contre la suppression d'une sauce par un autre utilisateur
   Sauce.findOne({ _id: req.params.id })
     .then((sauce) => {
       if (!sauce) {
@@ -66,6 +67,7 @@ exports.deleteSauce = (req, res, next) => {
         return res.status(403).json({ message: "requête non autorisée" });
       }
 
+      // suppression de l'image du dossier image à la supression d'une sauce
       const filename = sauce.imageUrl.split("/images/")[1];
       fs.unlink(`images/${filename}`, () => {
         Sauce.deleteOne({ _id: req.params.id })
@@ -73,6 +75,7 @@ exports.deleteSauce = (req, res, next) => {
           .catch((error) => res.status(400).json({ error }));
       });
     })
+
     .catch((error) => res.status(500).json({ error }));
 };
 
