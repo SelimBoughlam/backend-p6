@@ -55,12 +55,15 @@ exports.modifySauce = (req, res, next) => {
             }`,
           }
         : { ...req.body };
-      Sauce.updateOne(
-        { _id: req.params.id, userId: req.auth.userId },
-        { ...sauceObject, _id: req.params.id }
-      )
-        .then(() => res.status(200).json({ message: "sauce modifié !" }))
-        .catch((error) => res.status(400).json({ error }));
+      const filename = sauce.imageUrl.split("/images/")[1];
+      fs.unlink(`images/${filename}`, () => {
+        Sauce.updateOne(
+          { _id: req.params.id, userId: req.auth.userId },
+          { ...sauceObject, _id: req.params.id }
+        )
+          .then(() => res.status(200).json({ message: "sauce modifié !" }))
+          .catch((error) => res.status(400).json({ error }));
+      });
     })
     .catch((error) => res.status(500).json({ error }));
 };
