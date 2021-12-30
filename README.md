@@ -6,12 +6,13 @@ télecharger la dernière version stable de node.js sur https://nodejs.org/en/
 
 ## installation du Backend
 
-
 -cloner le repo
 
 -Créer un dossier `images` dans le dossier backend
 
 -executer les commandes `npm install` puis `nodemon server` pour démarrer le serveur
+
+note : le fichier `.env` a été publié exceptionnellement pour les besoins de la soutenance
 
 ## installation du Frontend
 
