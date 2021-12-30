@@ -55,6 +55,7 @@ exports.modifySauce = (req, res, next) => {
             }`,
           }
         : { ...req.body };
+      // supression de l'image modifiée
       const filename = sauce.imageUrl.split("/images/")[1];
       fs.unlink(`images/${filename}`, () => {
         Sauce.updateOne(
