@@ -128,7 +128,7 @@ exports.likeSystem = (req, res, next) => {
     case 0:
       Sauce.findOne({ _id: req.params.id })
         .then((sauce) => {
-          // si l'utilisateur n'est pas présent dans le tableau des dislikes
+          // si l'utilisateur est présent dans le tableau des dislikes
           if (sauce.usersDisliked.indexOf(req.body.userId) != -1) {
             Sauce.updateOne(
               { _id: req.params.id },
@@ -141,7 +141,7 @@ exports.likeSystem = (req, res, next) => {
               .then(() => res.status(200).json({ message: "aucun avis" }))
               .catch((error) => res.status(400).json({ error }));
           }
-          // si l'utilisateur n'est pas présent dans le tableau des likes
+          // si l'utilisateur est présent dans le tableau des likes
           if (sauce.usersLiked.indexOf(req.body.userId) != -1) {
             Sauce.updateOne(
               { _id: req.params.id },
