@@ -10,6 +10,8 @@ const userRoutes = require("./routes/user");
 const saucesRoutes = require("./routes/sauces");
 const path = require("path");
 const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
+
 app.use(express.json());
 
 // Connexion à la  BDD
@@ -23,7 +25,17 @@ mongoose
   .then(() => console.log("Connexion à MongoDB réussie !"))
   .catch(() => console.log("Connexion à MongoDB échouée !"));
 
+// utilisation du package express-rate-limit afin de se prémunir d'une attaque par force brute
+const limiter = rateLimit({
+  max: 100,
+  windowMs: 60 * 60 * 1000,
+  message: "plus de tentatives possibles,veuillez réessayer plus tard!",
+});
+app.use(limiter);
+
+// Ajout du package helmet afin de se protéger des failles courantes
 app.use(helmet());
+
 // création des CORS
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
