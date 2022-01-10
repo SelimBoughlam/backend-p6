@@ -100,13 +100,23 @@ exports.likeSystem = (req, res, next) => {
     // ajout d'un like
     case 1:
       // incrémentation du nombre de likes + ajout de l'utilisateur qui like
-      Sauce.updateOne(
-        { _id: req.params.id },
-        { $push: { usersLiked: req.body.userId }, $inc: { likes: +1 } }
-      )
-        .then(() =>
-          res.status(200).json({ message: "vous aimez cette sauce!" })
-        )
+      Sauce.findOne({ _id: req.params.id })
+        .then((sauce) => {
+          if (sauce.usersLiked.indexOf(req.body.userId) == -1) {
+            Sauce.updateOne(
+              { _id: req.params.id },
+              { $push: { usersLiked: req.body.userId }, $inc: { likes: +1 } }
+            )
+              .then(() =>
+                res.status(200).json({ message: "vous aimez cette sauce!" })
+              )
+              .catch((error) => res.status(400).json({ error }));
+          } else {
+            return res
+              .status(403)
+              .json({ message: "vous aimez déja cette sauce!" });
+          }
+        })
         .catch((error) => res.status(400).json({ error }));
 
       break;
@@ -114,14 +124,30 @@ exports.likeSystem = (req, res, next) => {
     //Ajout d'un dislike
     case -1:
       // incrémentation du nombre de dislikes + ajout de l'utilisateur qui dislike
-      Sauce.updateOne(
-        { _id: req.params.id },
-        { $push: { usersDisliked: req.body.userId }, $inc: { dislikes: +1 } }
-      )
-        .then(() =>
-          res.status(200).json({ message: "vous n'aimez pas cette sauce!" })
-        )
+      Sauce.findOne({ _id: req.params.id })
+        .then((sauce) => {
+          if (sauce.usersDisliked.indexOf(req.body.userId) == -1) {
+            Sauce.updateOne(
+              { _id: req.params.id },
+              {
+                $push: { usersDisliked: req.body.userId },
+                $inc: { dislikes: +1 },
+              }
+            )
+              .then(() =>
+                res
+                  .status(200)
+                  .json({ message: "vous n'aimez pas cette sauce!" })
+              )
+              .catch((error) => res.status(400).json({ error }));
+          } else {
+            return res
+              .status(403)
+              .json({ message: "vous avez déja dislike cette sauce!" });
+          }
+        })
         .catch((error) => res.status(400).json({ error }));
+
       break;
 
     // Annulation d'un like ou dislike
