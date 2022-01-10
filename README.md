@@ -12,8 +12,6 @@ télecharger la dernière version stable de node.js sur https://nodejs.org/en/
 
 -executer les commandes `npm install` puis `nodemon server` pour démarrer le serveur
 
-note : le fichier `.env` a été publié exceptionnellement pour les besoins de la soutenance
-
 ## installation du Frontend
 
 Suivre la procédure présente dans le fichier README du repo suivant : https://github.com/OpenClassrooms-Student-Center/Web-Developer-P6
