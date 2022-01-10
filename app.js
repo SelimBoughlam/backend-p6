@@ -2,12 +2,14 @@ const express = require("express");
 
 // Config variables d'environnement
 const dotEnv = require("dotenv").config();
+
 const mongoose = require("mongoose");
 const app = express();
 
 const userRoutes = require("./routes/user");
 const saucesRoutes = require("./routes/sauces");
 const path = require("path");
+const helmet = require("helmet");
 app.use(express.json());
 
 // Connexion à la  BDD
@@ -21,6 +23,7 @@ mongoose
   .then(() => console.log("Connexion à MongoDB réussie !"))
   .catch(() => console.log("Connexion à MongoDB échouée !"));
 
+app.use(helmet());
 // création des CORS
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
