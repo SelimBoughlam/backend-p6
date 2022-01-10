@@ -6,7 +6,7 @@ télecharger la dernière version stable de node.js sur https://nodejs.org/en/
 
 ## installation du Backend
 
--cloner le repo
+-cloner le repo à l'adresse suivante : https://github.com/SelimBoughlam/backend-p6
 
 -Créer un dossier `images` dans le dossier backend
 
@@ -16,4 +16,4 @@ note : le fichier `.env` a été publié exceptionnellement pour les besoins de 
 
 ## installation du Frontend
 
-https://github.com/OpenClassrooms-Student-Center/Web-Developer-P6
+Suivre la procédure présente dans le fichier README du repo suivant : https://github.com/OpenClassrooms-Student-Center/Web-Developer-P6
